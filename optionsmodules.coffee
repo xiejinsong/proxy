@@ -25,4 +25,4 @@ class UrlReplace
 				return true
 		return false
 
-module.exports = OptionsModules 
+module.exports = OptionsModules

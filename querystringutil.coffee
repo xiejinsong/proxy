@@ -8,6 +8,6 @@ class QueryStringUtil
 
 		return true if s == diff_s
 		return false for ss in diff_s.split('&') when !s.match(".*(#{ss}).*")
-		return true	
+		return true
 
 module.exports = new QueryStringUtil()

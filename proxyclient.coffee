@@ -12,13 +12,6 @@ class ProxyClient
 	forward: (req, res, callback) ->
 		@start_date = new Date()
 
-		data = ""
-		req.on 'data', (chunk) ->
-			data += chunk
-
-		req.on 'end', () ->
-			if req.method.match(/.*(POST|OPTIONS).*/)? then p_req.end(data) else p_req.end()				
-
 		@options_modules = new OptionsModules(@config)
 		@res_modules = new ResModules(@config)
 
@@ -34,18 +27,24 @@ class ProxyClient
 			p_res.on 'end', () =>
 				@end_date = new Date()
 				buffer = bfh.toBuffer()
-
-				@res_modules.pipeAll options, p_res, buffer, res, (statusCode, headers) ->
-					res.writeHead(statusCode, headers)
-
+				
+				@res_modules.pipeAll(options, p_res, buffer, res)
+				
 				callback(@start_date, @end_date, options)
+
+		req.on 'end', () ->
+			if req.method.match(/.*(POST|OPTIONS).*/)? then p_req.end(data) else p_req.end()	
+
+		data = ""
+		req.on 'data', (chunk) ->
+			data += chunk		
 
 		p_req.on 'req-timeout', () ->
 			if p_req? then p_req.abort()
 
 		p_req.on 'error', () ->
 			clearTimeout(setTimeout(p_req.emit('req-timeout'), 5000))				
-	
+
 	parse: (req, callback, options = {}) ->
 		uri = url.parse(req.url)
 

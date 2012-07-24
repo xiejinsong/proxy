@@ -9,7 +9,7 @@ class ZlibUtil
 
 	compress_type: (content_encoding) ->
 		# Compress data using gzip.
-		zip = 'zip'
+		gzip = 'gzip'
 
 		# Compress data using deflate
 		deflate = 'deflate'		
@@ -18,7 +18,7 @@ class ZlibUtil
 		deflateRaw = 'deflateRaw'
 
 		if content_encoding.match(/.*(gzip).*/)?
-			return zip
+			return gzip
 		else if content_encoding.match(/.*(deflate).*/)?
 			return deflate
 		else if content_encoding.match(/.*(deflateRaw).*/)?	
@@ -27,14 +27,14 @@ class ZlibUtil
 			return null
 
 	compress: (content_type, content_encoding, str, callback) ->
+
 		if content_type.match(/.*(gbk|GBK).*/)?
 			buf = @utf8_to_gbk.convert(str)
 		else 
 			buf = new Buffer(str)
 
 		type = @compress_type(content_encoding)
-		console.log content_encoding
-
+		
 		if type?
 			zlib["#{type}"] buf, (err, cbuf) ->
 				callback(cbuf)
@@ -43,7 +43,7 @@ class ZlibUtil
 
 	decompress_type: (content_encoding) ->
 		# Decompress a gzip stream.
-		unzip = 'unzip'
+		gunzip = 'gunzip'
 
 		# Decompress a deflate stream
 		inflate = 'inflate'
@@ -52,7 +52,7 @@ class ZlibUtil
 		inflateRaw = 'inflateRaw'		
 
 		if content_encoding.match(/.*(gzip).*/)?
-			return unzip
+			return gunzip
 		else if content_encoding.match(/.*(deflate).*/)?
 			return inflate
 		else if content_encoding.match(/.*(deflateRaw).*/)?	

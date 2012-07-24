@@ -9,7 +9,7 @@ class HttpProxy
 		proxy_client = new ProxyClient(@config)
 		@server.on 'request', (req, res) ->
 			proxy_client.forward req, res, (start_date, end_date, options) ->
-				#util.log "#{end_date.getTime() - start_date.getTime()} #{options.href}"
+				util.log "#{end_date.getTime() - start_date.getTime()} #{options.href}"
 
 	listen: (port) ->
 		@server.listen port || config.port

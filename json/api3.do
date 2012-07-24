@@ -1,0 +1,1 @@
+{"api":"com.taobao.client.sys.login","v":"*","ret":["FAIL::登录失败1231231","ERROR_NEED_CHECK_CODE::为了您的账号安全，请输入验证码。"],"data":{"checkCodeUrl":"http://regcheckcode.taobao.com/auction/checkcode?sessionID=4cd434d65183ca3e465b9d535c7917ff&seed=1343133867547","checkCodeId":"4cd434d65183ca3e465b9d535c7917ff"}}
