@@ -4,6 +4,9 @@ querystring = require('querystring')
 
 QueryStringUtil = require('./querystringutil')
 ZlibUtil = require('./zlibutil')
+CUtil = require('./cutil')
+
+logger = require('./loggerutil')
 
 class ResModules 
 	constructor: (@config) ->
@@ -29,15 +32,7 @@ class Othons
 	constructor: (@config) ->
 
 	pipe: (options, p_res, buffer, res, callback) ->
-		res.writeHead(p_res.statusCode, p_res.headers)
-		
-		if buffer.length? 
-			res.write(buffer)
-			res.end()
-			return true
-		else
-			res.end()
-			return true
+		CUtil.forward(p_res, buffer, res)
 
 class Mock
 	constructor: () ->
@@ -63,9 +58,7 @@ class JsonMock extends Mock
 				str = fs.readFileSync("#{rule['file']}")
 				buf = new Buffer(str)
 				p_res.headers['content-length'] = buf.length
-				res.writeHead(p_res.statusCode, p_res.headers)
-				res.write(buf)
-				res.end()
+				CUtil.forward(p_res, buf, res)
 				return true
 		return false
 
@@ -101,9 +94,7 @@ class HtmlModify extends Mock
 				ZlibUtil.decompress @content_type, @content_encoding, buffer, (str) =>
 					str = str.replace("#{rule['content']}", "#{rule['replace']}")
 					ZlibUtil.compress @content_type, @content_encoding, str, (cbuf) =>
-						res.writeHead(p_res.statusCode, p_res.headers)
-						res.write(cbuf)
-						res.end()
+						CUtil.forward(p_res, buf, res)
 				return true		
 		return false
 
