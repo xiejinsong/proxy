@@ -27,14 +27,13 @@ class ZlibUtil
 			return null
 
 	compress: (content_type, content_encoding, str, callback) ->
-
 		if content_type.match(/.*(gbk|GBK).*/)?
 			buf = @utf8_to_gbk.convert(str)
 		else 
 			buf = new Buffer(str)
 
 		type = @compress_type(content_encoding)
-		
+
 		if type?
 			zlib["#{type}"] buf, (err, cbuf) ->
 				callback(cbuf)

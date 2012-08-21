@@ -10,27 +10,25 @@ class ProxyClient
 	constructor: (@config) ->
 		
 	forward: (req, res, callback) ->
-		@start_date = new Date()
+		start_date = new Date()
 
-		@options_modules = new OptionsModules(@config)
-		@res_modules = new ResModules(@config)
+		options_modules = new OptionsModules(@config)
+		res_modules = new ResModules(@config)
 
-		options = @parse req, (options) =>
-			@options_modules.pipeAll(options)
+		options = @parse req, (options) ->
+			options_modules.pipeAll(options)
 
-		p_req = http.request options, (p_res) =>
+		p_req = http.request options, (p_res) ->
 			bfh = new BufferHelper()
 
-			p_res.on 'data', (chunk) ->		
+			p_res.on 'data', (chunk) ->
 				bfh.concat(chunk)
 
-			p_res.on 'end', () =>
-				@end_date = new Date()
+			p_res.on 'end', () ->
+				end_date = new Date()
 				buffer = bfh.toBuffer()
-				
-				@res_modules.pipeAll(options, p_res, buffer, res)
-				
-				callback(@start_date, @end_date, options)
+				res_modules.pipeAll(options, p_res, buffer, res)
+				callback(start_date, end_date, options)
 
 		req.on 'end', () ->
 			if req.method.match(/.*(POST|OPTIONS).*/)? then p_req.end(data) else p_req.end()	

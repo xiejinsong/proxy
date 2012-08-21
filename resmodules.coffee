@@ -49,8 +49,7 @@ class JsonMock extends Mock
 
 	pipe: (options, p_res, buffer, res, callback) =>
 		@init(p_res)
-
-		if !(@statusCode == 200) || !@content_type? || !@content_type.match(/.*(application\/json).*/)
+		if !(@statusCode == 200) #|| !@content_type? || !@content_type.match(/.*(application\/json).*/)
 			return false
 
 		for rule in @rules
@@ -94,7 +93,7 @@ class HtmlModify extends Mock
 				ZlibUtil.decompress @content_type, @content_encoding, buffer, (str) =>
 					str = str.replace("#{rule['content']}", "#{rule['replace']}")
 					ZlibUtil.compress @content_type, @content_encoding, str, (cbuf) =>
-						CUtil.forward(p_res, buf, res)
+						CUtil.forward(p_res, cbuf, res)
 				return true		
 		return false
 
